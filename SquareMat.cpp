@@ -1,0 +1,419 @@
+// noashalom5@gmail.com
+
+#include <stdexcept> 
+#include <sstream>
+#include <cmath>
+#include "SquareMat.hpp"
+
+using namespace std;
+namespace mat {
+    SquareMat::SquareMat()
+    {
+        cout << "Please enter size of Square Matrix: ";
+        cin >> size;
+        if (cin.fail() || size<=0) {
+            throw invalid_argument("Error: size must be a positive integer.");
+        }
+
+        matrix = new double*[size];
+        for (int i=0 ; i<size ; i++) {
+            matrix[i] = new double[size];
+        }
+        cin.ignore();
+
+        // Enter values
+        cout << "Enter " << size << " real numbers in each row, separated by space.";
+        for (int i=0 ; i<size ; i++) {
+            string line;
+            getline(cin, line);
+            istringstream s(line);
+            double number;
+            int count = 0;
+            while (s >> number) {
+                if(count > size) 
+                    throw runtime_error("Error: too many values in row " + to_string(i+1));
+                matrix[i][count] = number;
+                count++;
+            }
+            if(count < size)
+                throw runtime_error("Error: row " + to_string(i+1) + " must contain exactly " + to_string(size) + " values.");
+        }
+    }
+
+    SquareMat::SquareMat(int sizeMat)
+    {
+        size = sizeMat;
+        matrix = new double*[size];
+        for (int i=0 ; i<size ; i++) {
+            matrix[i] = new double[size];
+        }
+
+        // Enter 0.0 in all the matrix
+        for (int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] = 1.0;
+            }
+        }
+    }
+
+    SquareMat::SquareMat(istream& input)
+    {
+        input >> size;
+        if(size <= 0)
+            throw runtime_error("Error: invalid matrix size");
+        
+        matrix = new double*[size];
+        string stam;
+        getline(input, stam);
+        for (int i=0 ; i<size ; i++) {
+            string line;
+            if(!getline(input, line))
+                throw runtime_error("Error: row " + to_string(i+1) + " is missing.");
+            
+            istringstream row(line);
+            matrix[i] = new double[size];
+            for(int count=0 ; count<size ; count++) {
+                if(!(row >> matrix[i][count]))
+                    throw runtime_error("Error: row " + to_string(i+1) + " must contain exactly " + to_string(size) + " values.");
+            }
+            double extra;
+            if(row >> extra)
+                throw runtime_error("Error: too many values in row " + to_string(i+1));
+        }
+    }
+
+    SquareMat::SquareMat(const SquareMat& other) : size(other.size) {
+        matrix = new double*[size];
+        for (int i=0 ; i<size ; i++) {
+            matrix[i] = new double[size];
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] = other.matrix[i][j];
+            }
+        }
+    }
+
+    SquareMat::~SquareMat() {
+        for (int i=0 ; i<size ; i++) {
+            delete[] matrix[i];
+        }
+        delete[] matrix;
+    }
+
+    SquareMat& SquareMat::operator=(const SquareMat& other) {
+        if (this == &other) return *this;
+
+        for (int i=0 ; i<size ; i++) {
+            delete[] matrix[i];
+        }
+        delete[] matrix;
+
+        size = other.size;
+        matrix = new double*[size];
+        for (int i=0 ; i<size ; i++) {
+            matrix[i] = new double[size];
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] = other.matrix[i][j];
+            }
+        }
+        return *this;
+    }
+
+    SquareMat& SquareMat::operator+=(const SquareMat& other) {
+        if (size != other.size) {
+            throw invalid_argument("Error: can't do the addition. The matrixs are not in the same size.");
+        }
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] += other.matrix[i][j];
+            }
+        }
+        return *this;
+    }
+
+    SquareMat SquareMat::operator+(const SquareMat& other) const {
+        SquareMat result(*this);
+        result += other;
+        return result;
+    }
+
+    SquareMat& SquareMat::operator-=(const SquareMat& other) {
+        if (size != other.size) {
+            throw invalid_argument("Error: can't do the subtraction. The matrixs are not in the same size.");
+        }
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] -= other.matrix[i][j];
+            }
+        }
+        return *this;
+    }
+
+    SquareMat SquareMat::operator-(const SquareMat& other) const{
+        SquareMat result(*this);
+        result -= other;
+        return result;
+    }
+
+    SquareMat& SquareMat::operator*=(double scalar) {
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] *= scalar;
+            }
+        }
+        return *this;
+    }
+
+    SquareMat& SquareMat::operator*=(const SquareMat& other) {
+        if (size != other.size) {
+            throw invalid_argument("Error: can't do the multiplication. The matrixs are not in the same size.");
+        }
+        double** result = new double*[size];
+        for(int i=0 ; i<size ; i++)
+            result[i] = new double[size];
+
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                for(int k=0 ; k<size ; k++)
+                    matrix[i][j] += matrix[i][k]*other.matrix[k][j];
+            }
+        }
+
+        for(int i=0 ; i<size ; i++)
+            delete[] matrix[i];
+        delete[] matrix;
+        matrix = result;
+        return *this;
+    }
+
+    SquareMat SquareMat::operator*(const SquareMat& other) const {
+        SquareMat result(*this);
+        result *= other;
+        return result;
+    }
+
+    SquareMat SquareMat::operator*(double scalar) const {
+        SquareMat result(*this);
+        result *= scalar;
+        return result;
+    }
+
+    SquareMat operator*(double scalar, const SquareMat& mat) {
+        SquareMat result(mat);
+        result *= scalar;
+        return result;
+    }
+
+    SquareMat& SquareMat::operator%=(const SquareMat& other) {
+        if (size != other.size) {
+            throw invalid_argument("Error: can't do the multiplication. The matrixs are not in the same size.");
+        }
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] *= other.matrix[i][j];
+            }
+        }
+        return *this;
+    }
+
+    SquareMat& SquareMat::operator%=(double scalar) {
+        if (scalar == 0) {
+            throw invalid_argument("Error: can't do modulo by zero.");
+        }
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] = fmod(matrix[i][j], scalar);
+            }
+        }
+        return *this;
+    }
+
+    SquareMat SquareMat::operator%(const SquareMat& other) const {
+        SquareMat result(*this);
+        result %= other;
+        return result;
+    }
+
+    SquareMat SquareMat::operator%(double scalar) const {
+        SquareMat result(*this);
+        result %= scalar;
+        return result;
+    }
+
+    SquareMat& SquareMat::operator/=(double scalar) {
+        if (scalar == 0) {
+            throw invalid_argument("Error: can't do division by zero.");
+        }
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] = matrix[i][j]/scalar;
+            }
+        }
+        return *this;
+    }
+
+    SquareMat SquareMat::operator/(double scalar) const{
+        SquareMat result(*this);
+        result /= scalar;
+        return result;
+    }
+
+    double SquareMat::sumOfMatrix(const SquareMat& mat) {
+        double sumMat = 0.0;
+        for(int i=0 ; i<mat.size ; i++) {
+            for (int j=0 ; j<mat.size ; j++) {
+                sumMat += mat.matrix[i][j];
+            }
+        }
+        return sumMat;
+    }
+
+    bool SquareMat::operator<=(const SquareMat& other) {
+        double sumMat1 = sumOfMatrix(*this);
+        double sumMat2 = sumOfMatrix(other);
+        if(sumMat1 <= sumMat2)
+            return true;
+        return false;
+    }
+
+    bool SquareMat::operator>=(const SquareMat& other) {
+        double sumMat1 = sumOfMatrix(*this);
+        double sumMat2 = sumOfMatrix(other);
+        if(sumMat1 >= sumMat2)
+            return true;
+        return false;
+    }
+
+    bool SquareMat::operator==(const SquareMat& other) {
+        double sumMat1 = sumOfMatrix(*this);
+        double sumMat2 = sumOfMatrix(other);
+        if(sumMat1 == sumMat2)
+            return true;
+        return false;
+    }
+
+    bool SquareMat::operator!=(const SquareMat& other) {
+        double sumMat1 = sumOfMatrix(*this);
+        double sumMat2 = sumOfMatrix(other);
+        if(sumMat1 != sumMat2)
+            return true;
+        return false;
+    }
+
+    bool SquareMat::operator<(const SquareMat& other) {
+        double sumMat1 = sumOfMatrix(*this);
+        double sumMat2 = sumOfMatrix(other);
+        if(sumMat1<=sumMat2 && sumMat1!=sumMat2)
+            return true;
+        return false;
+    }
+
+    bool SquareMat::operator>(const SquareMat& other) {
+        double sumMat1 = sumOfMatrix(*this);
+        double sumMat2 = sumOfMatrix(other);
+        if(sumMat1>=sumMat2 && sumMat1!=sumMat2)
+            return true;
+        return false;
+    }
+
+    SquareMat& SquareMat::operator++() {
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] += 1;
+            }
+        }
+        return *this;
+    }
+
+    SquareMat& SquareMat::operator++(int) {
+        SquareMat temp(*this);
+        ++(*this);
+        return temp;
+    }
+
+    SquareMat& SquareMat::operator--() {
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                matrix[i][j] -= 1;
+            }
+        }
+        return *this;
+    }
+
+    SquareMat& SquareMat::operator--(int) {
+        SquareMat temp(*this);
+        --(*this);
+        return temp;
+    }
+
+    SquareMat SquareMat::operator-() const {
+        SquareMat result(*this);
+        for(int i=0 ; i<result.size ; i++) {
+            for (int j=0 ; j<result.size; j++) {
+                result.matrix[i][j] = -result.matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    SquareMat SquareMat::operator~() const {
+        SquareMat result(*this);
+        for(int i=0 ; i<result.size ; i++) {
+            for (int j=0 ; j<result.size; j++) {
+                result.matrix[i][j] = matrix[j][i];
+            }
+        }
+        return result;
+    }
+
+    SquareMat SquareMat::operator^(int power) const {
+        if (power < 0) {
+            throw invalid_argument("Error: the power must be positive.");
+        }
+        SquareMat result((*this).size); // Identity matrix
+        SquareMat originalMat(*this);
+        while(power > 0) {
+            if((power%2) == 1)
+                result *= originalMat;
+            originalMat *= originalMat;
+            power /= 2;
+        }
+        return result;
+    }
+
+    double SquareMat::operator!() const {
+        if(size == 1)
+            return matrix[0][0];
+        if(size == 2)
+            return matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0];
+        
+        double det = 0.0;
+
+        // Do the minor matrix (remove the first line and the 'delCol' column)
+        for(int delCol=0 ; delCol<size ; delCol++) {
+            SquareMat minor(size-1);
+            for(int i=1 ; i<size ; i++) {
+                int mincol = 0;
+                for(int j=0 ; j<size ; j++) {
+                    if(j == delCol)
+                        continue;
+                    minor.matrix[i-1][mincol] = matrix[i][j];
+                    mincol++;
+                }
+            }
+            double sign = (delCol%2 == 0) ? 1.0 : -1.0;
+            det += sign*matrix[0][delCol]*(!minor); // Recursive
+        }
+        return det;
+    }
+
+    ostream& operator<<(ostream& os, const SquareMat& mat) {
+        for(int i=0 ; i<mat.size ; i++) {
+            for(int j=0 ; j<mat.size ; j++) {
+                os << mat.matrix[i][j] << " ";
+            }
+            os << endl;
+        }
+        return os;
+    }
+
+}

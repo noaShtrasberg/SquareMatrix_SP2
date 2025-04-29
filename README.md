@@ -1,0 +1,1 @@
+comparsion between matrix - the sum of the cells and not the size of the matrix
