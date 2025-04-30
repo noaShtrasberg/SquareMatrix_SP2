@@ -164,8 +164,10 @@ namespace mat {
 
         for(int i=0 ; i<size ; i++) {
             for (int j=0 ; j<size ; j++) {
-                for(int k=0 ; k<size ; k++)
+                result[i][j] = 0;
+                for(int k=0 ; k<size ; k++) {
                     result[i][j] += matrix[i][k]*other.matrix[k][j];
+                }
             }
         }
 
