@@ -11,14 +11,13 @@ private:
 
 public:
     SquareMat();
-    SquareMat(int sizeMat); // Identity mat - for the power
-    explicit SquareMat(istream& input);
+    SquareMat(int sizeMat); // Identity matrix - for the power
     SquareMat(const SquareMat& other); // Copy constructor
     ~SquareMat();
 
     // For matrix[i][j]:
-    double* operator[](int row) {return matrix[row];}
-    const double* operator[](int row) const {return matrix[row];}
+    double* operator[](int row);
+    const double* operator[](int row) const;
 
     SquareMat& operator=(const SquareMat& other); // Assignment operator
     SquareMat& operator+=(const SquareMat& other);
@@ -26,7 +25,7 @@ public:
     SquareMat& operator-=(const SquareMat& other);
     SquareMat operator-(const SquareMat& other) const; // Matrix - Matrix
 
-    SquareMat& operator*=(double scalar); // Matrix * scalar
+    SquareMat& operator*=(double scalar); // Matrix * Scalar
     SquareMat& operator*=(const SquareMat& other); // Matrix * Matrix
     SquareMat operator*(const SquareMat& other) const; // Matrix * Matrix
     SquareMat operator*(double scalar) const; // Matrix * Scalar

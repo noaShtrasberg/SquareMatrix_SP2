@@ -48,37 +48,14 @@ namespace mat {
             matrix[i] = new double[size];
         }
 
-        // Enter 0.0 in all the matrix
-        for (int i=0 ; i<size ; i++) {
-            for (int j=0 ; j<size ; j++) {
-                matrix[i][j] = 1.0;
+        // Identity matrix
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (i == j)
+                    matrix[i][j] = 1.0; 
+                else
+                    matrix[i][j] = 0.0;
             }
-        }
-    }
-
-    SquareMat::SquareMat(istream& input)
-    {
-        input >> size;
-        if(size <= 0)
-            throw runtime_error("Error: invalid matrix size");
-        
-        matrix = new double*[size];
-        string stam;
-        getline(input, stam);
-        for (int i=0 ; i<size ; i++) {
-            string line;
-            if(!getline(input, line))
-                throw runtime_error("Error: row " + to_string(i+1) + " is missing.");
-            
-            istringstream row(line);
-            matrix[i] = new double[size];
-            for(int count=0 ; count<size ; count++) {
-                if(!(row >> matrix[i][count]))
-                    throw runtime_error("Error: row " + to_string(i+1) + " must contain exactly " + to_string(size) + " values.");
-            }
-            double extra;
-            if(row >> extra)
-                throw runtime_error("Error: too many values in row " + to_string(i+1));
         }
     }
 
@@ -97,6 +74,20 @@ namespace mat {
             delete[] matrix[i];
         }
         delete[] matrix;
+    }
+
+    double* SquareMat::operator[](int row) {
+        if (row<0 || row>=size) {
+            throw out_of_range("Error: index out of bounds");
+        }
+        return matrix[row];
+    }
+    
+    const double* SquareMat::operator[](int row) const {
+        if (row<0 || row>=size) {
+            throw out_of_range("Error: index out of bounds");
+        }
+        return matrix[row];
     }
 
     SquareMat& SquareMat::operator=(const SquareMat& other) {
@@ -174,7 +165,7 @@ namespace mat {
         for(int i=0 ; i<size ; i++) {
             for (int j=0 ; j<size ; j++) {
                 for(int k=0 ; k<size ; k++)
-                    matrix[i][j] += matrix[i][k]*other.matrix[k][j];
+                    result[i][j] += matrix[i][k]*other.matrix[k][j];
             }
         }
 
@@ -324,7 +315,7 @@ namespace mat {
         return *this;
     }
 
-    SquareMat& SquareMat::operator++(int) {
+    SquareMat SquareMat::operator++(int) {
         SquareMat temp(*this);
         ++(*this);
         return temp;
@@ -339,7 +330,7 @@ namespace mat {
         return *this;
     }
 
-    SquareMat& SquareMat::operator--(int) {
+    SquareMat SquareMat::operator--(int) {
         SquareMat temp(*this);
         --(*this);
         return temp;
@@ -415,5 +406,4 @@ namespace mat {
         }
         return os;
     }
-
 }
