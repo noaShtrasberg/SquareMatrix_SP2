@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
+using namespace std;
 namespace mat {
 class SquareMat {
 private:
@@ -38,7 +39,7 @@ public:
 
     SquareMat& operator/=(double scalar);
     SquareMat operator/(double scalar) const;
-    double sumOfMatrix(const SquareMat& mat); // Helper function
+    double sumOfMatrix() const; // Helper function
     bool operator<=(const SquareMat& other);
     bool operator>=(const SquareMat& other);
     bool operator==(const SquareMat& other);
@@ -47,9 +48,9 @@ public:
     bool operator>(const SquareMat& other);
 
     SquareMat& operator++(); // ++Mat
-    SquareMat& operator++(int); // Mat++
+    SquareMat operator++(int); // Mat++
     SquareMat& operator--(); // --Mat
-    SquareMat& operator--(int); // Mat--
+    SquareMat operator--(int); // Mat--
 
     SquareMat operator-() const; // Unary minus
     SquareMat operator~() const; // Transpose

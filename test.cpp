@@ -11,7 +11,7 @@ TEST_CASE("Constructor with size") {
     SquareMat A(2);
     CHECK(A[0][0] == 1.0);
     CHECK(A[1][1] == 1.0);
-    A[0][0] == 9;
+    A[0][0] = 9;
     CHECK(A[0][0] == 9.0);
 }
 
@@ -26,11 +26,11 @@ TEST_CASE("Copy constructor") {
 
 TEST_CASE("Assignment operator") { // "="
     SquareMat A(3);
-    A[3][4] = 5;
+    A[1][2] = 5;
     SquareMat B(3);
-    B[3][4] == 12;
+    B[1][2] = 12;
     B = A;
-    CHECK(B[3][4] == 5);
+    CHECK(B[1][2] == 5);
 }
 
 TEST_CASE("Addition operator") { // "Matrix += Matrix, Matrix + Matrix"
@@ -175,8 +175,8 @@ TEST_CASE("Division by scalar") { // "Matrix /= Scalar, Matrix / Scalar"
     SquareMat A(2);
     A[0][0] = 18;
     A[0][1] = 15;
-    A[1][0] = 26;
-    A[1][1] = 32;
+    A[1][0] = 39;
+    A[1][1] = 30;
     A /= 3;
     CHECK(A[0][0] == 6);
     CHECK(A[0][1] == 5);
@@ -185,8 +185,8 @@ TEST_CASE("Division by scalar") { // "Matrix /= Scalar, Matrix / Scalar"
     SquareMat B(2); 
     B = A / 2; 
     CHECK(B[0][0] == 3);
-    CHECK(B[0][1] == 2);
-    CHECK(B[1][0] == 6);
+    CHECK(B[0][1] == 2.5);
+    CHECK(B[1][0] == 6.5);
     CHECK(B[1][1] == 5);
 }
 
@@ -196,7 +196,7 @@ TEST_CASE("Sum of elements in matrix") { // sumOfMatrix
     A[0][1] = 2;
     A[1][0] = 3;
     A[1][1] = 4;
-    double sum = A.sumOfMatrix(matrix);
+    double sum = A.sumOfMatrix();
     CHECK(sum == 10);
 }
 
@@ -211,7 +211,7 @@ TEST_CASE("Comparison operator <=") { // "<="
     B[0][1] = 4;
     SquareMat C(3); // Identity matrix
     CHECK_FALSE(A <= B); 
-    CHECK(B <= C);
+    CHECK(C <= B);
 }
 
 TEST_CASE("Comparison operator >=") { // ">="
@@ -264,7 +264,7 @@ TEST_CASE("Comparison operator <") { // "<"
     B[0][1] = 8;
     SquareMat C(3); // Identity matrix
     CHECK(C < A); 
-    CHECK_FALSE(C < B);
+    CHECK_FALSE(B < C);
 }
 
 TEST_CASE("Comparison operator <") { // ">"
@@ -329,7 +329,7 @@ TEST_CASE("Transpose operator") { // "~"
     A[0][1] = 2;
     A[1][0] = 3;
     A[1][1] = 4;
-    SquareMat result = ~matrix;
+    SquareMat result = ~A;
     CHECK(result[0][0] == 1);
     CHECK(result[0][1] == 3);
     CHECK(result[1][0] == 2);
@@ -342,11 +342,11 @@ TEST_CASE("Power operator") { // "^"
     A[0][1] = 5;
     A[1][0] = 2;
     A[1][1] = 1;
-    SquareMat result = matrix ^ 3;
-    CHECK(result[0][0] == 27);
-    CHECK(result[0][1] == 125);
-    CHECK(result[1][0] == 8);
-    CHECK(result[1][1] == 1);
+    SquareMat result = A ^ 3;
+    CHECK(result[0][0] == 97);
+    CHECK(result[0][1] == 115);
+    CHECK(result[1][0] == 46);
+    CHECK(result[1][1] == 51);
 }
 
 TEST_CASE("Determinant operator") { // "!"

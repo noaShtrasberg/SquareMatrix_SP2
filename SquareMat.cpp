@@ -248,65 +248,65 @@ namespace mat {
         return result;
     }
 
-    double SquareMat::sumOfMatrix(const SquareMat& mat) {
+    double SquareMat::sumOfMatrix() const {
         double sumMat = 0.0;
-        for(int i=0 ; i<mat.size ; i++) {
-            for (int j=0 ; j<mat.size ; j++) {
-                sumMat += mat.matrix[i][j];
+        for(int i=0 ; i<size ; i++) {
+            for (int j=0 ; j<size ; j++) {
+                sumMat += matrix[i][j];
             }
         }
         return sumMat;
     }
 
     bool SquareMat::operator<=(const SquareMat& other) {
-        double sumMat1 = sumOfMatrix(*this);
-        double sumMat2 = sumOfMatrix(other);
+        double sumMat1 = (*this).sumOfMatrix();
+        double sumMat2 = other.sumOfMatrix();
         if(sumMat1 <= sumMat2)
             return true;
         return false;
     }
 
     bool SquareMat::operator>=(const SquareMat& other) {
-        double sumMat1 = sumOfMatrix(*this);
-        double sumMat2 = sumOfMatrix(other);
+        double sumMat1 = (*this).sumOfMatrix();
+        double sumMat2 = other.sumOfMatrix();
         if(sumMat1 >= sumMat2)
             return true;
         return false;
     }
 
     bool SquareMat::operator==(const SquareMat& other) {
-        double sumMat1 = sumOfMatrix(*this);
-        double sumMat2 = sumOfMatrix(other);
+        double sumMat1 = (*this).sumOfMatrix();
+        double sumMat2 = other.sumOfMatrix();
         if(sumMat1 == sumMat2)
             return true;
         return false;
     }
 
     bool SquareMat::operator!=(const SquareMat& other) {
-        double sumMat1 = sumOfMatrix(*this);
-        double sumMat2 = sumOfMatrix(other);
+        double sumMat1 = (*this).sumOfMatrix();
+        double sumMat2 = other.sumOfMatrix();
         if(sumMat1 != sumMat2)
             return true;
         return false;
     }
 
     bool SquareMat::operator<(const SquareMat& other) {
-        double sumMat1 = sumOfMatrix(*this);
-        double sumMat2 = sumOfMatrix(other);
+        double sumMat1 = (*this).sumOfMatrix();
+        double sumMat2 = other.sumOfMatrix();
         if(sumMat1<=sumMat2 && sumMat1!=sumMat2)
             return true;
         return false;
     }
 
     bool SquareMat::operator>(const SquareMat& other) {
-        double sumMat1 = sumOfMatrix(*this);
-        double sumMat2 = sumOfMatrix(other);
+        double sumMat1 = (*this).sumOfMatrix();
+        double sumMat2 = other.sumOfMatrix();
         if(sumMat1>=sumMat2 && sumMat1!=sumMat2)
             return true;
         return false;
     }
 
-    SquareMat& SquareMat::operator++() {
+    SquareMat& SquareMat::operator++() { // ++A
         for(int i=0 ; i<size ; i++) {
             for (int j=0 ; j<size ; j++) {
                 matrix[i][j] += 1;
@@ -315,13 +315,13 @@ namespace mat {
         return *this;
     }
 
-    SquareMat SquareMat::operator++(int) {
+    SquareMat SquareMat::operator++(int) { // A++
         SquareMat temp(*this);
         ++(*this);
         return temp;
     }
 
-    SquareMat& SquareMat::operator--() {
+    SquareMat& SquareMat::operator--() { // --A
         for(int i=0 ; i<size ; i++) {
             for (int j=0 ; j<size ; j++) {
                 matrix[i][j] -= 1;
@@ -330,7 +330,7 @@ namespace mat {
         return *this;
     }
 
-    SquareMat SquareMat::operator--(int) {
+    SquareMat SquareMat::operator--(int) { // A--
         SquareMat temp(*this);
         --(*this);
         return temp;
