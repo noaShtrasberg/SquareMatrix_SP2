@@ -1,4 +1,5 @@
-// main.cpp
+// noashalom5@gmail.com
+
 #include "SquareMat.hpp"
 #include <iostream>
 using namespace std;
@@ -17,6 +18,7 @@ int main() {
     B[1][0] = 7;
     B[1][1] = 8;
 
+    // Copy Constructor
     SquareMat C(B);
 
     cout << "Matrix A:\n" << A;
@@ -29,18 +31,20 @@ int main() {
     // Subtraction
     cout << "\nA - B:\n" << (A - B);
 
+    // Matrix Multiplication
+    cout << "\nA * B:\n" << (A * B);
+    
     // Scalar Multiplication
     cout << "\nA * 2:\n" << (A * 2);
     cout << "\n2 * A:\n" << (2 * A);
 
-    // Matrix Multiplication
-    cout << "\nA * B:\n" << (A * B);
-
     // Scalar Division
     cout << "\nA / 2:\n" << (A / 2);
 
-    // Cell-wise multiplication (modulo-like)
+    // Cell-wise multiplication
     cout << "\nA % B (element-wise):\n" << (A % B);
+
+    // Scalar Modulo Division
     cout << "\nA % 2:\n" << (A % 2);
 
     // Unary Minus

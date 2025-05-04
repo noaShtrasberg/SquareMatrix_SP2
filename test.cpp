@@ -1,3 +1,5 @@
+// noashalom5@gmail.com
+
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "SquareMat.hpp"
 #include "doctest.hpp"
